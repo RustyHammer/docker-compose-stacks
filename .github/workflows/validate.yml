@@ -1,0 +1,36 @@
+name: Validate Docker Compose
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-compose:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stack: [node-mongo, java-postgres]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create .env from example
+        run: cp ${{ matrix.stack }}/.env.example ${{ matrix.stack }}/.env
+
+      - name: Validate Docker Compose syntax
+        run: docker compose -f ${{ matrix.stack }}/docker-compose.yaml config --quiet
+
+  lint-dockerfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfiles with Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "**/Dockerfile"
+          failure-threshold: warning
