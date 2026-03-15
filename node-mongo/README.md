@@ -1,40 +1,40 @@
-# Stack Node.js + MongoDB + Mongo Express
+# Node.js + MongoDB + Mongo Express Stack
 
-Stack de developpement pour une application Node.js avec MongoDB comme base de donnees et Mongo Express comme interface d'administration.
+Development stack for a Node.js application with MongoDB as the database and Mongo Express as the admin interface.
 
 ## Services
 
 | Service | Image | Port | Description |
 |---------|-------|------|-------------|
-| app | `node:20-alpine` | 3000 | Application Node.js |
-| mongodb | `mongo:7.0` | 27017 | Base de donnees |
-| mongo-express | `mongo-express:1.0` | 8081 | Interface web MongoDB |
+| app | `node:20-alpine` | 3000 | Node.js application |
+| mongodb | `mongo:7.0` | 27017 | Database |
+| mongo-express | `mongo-express:1.0` | 8081 | MongoDB web interface |
 
-## Demarrage
+## Getting Started
 
 ```bash
-cp .env.example .env    # Modifier les mots de passe
+cp .env.example .env    # Edit the passwords
 docker-compose up -d
 ```
 
-- Application : http://localhost:3000
-- Mongo Express : http://localhost:8081
+- Application: http://localhost:3000
+- Mongo Express: http://localhost:8081
 
 ## Architecture
 
 ```mermaid
 graph LR
-    U[Navigateur] --> A[Node.js :3000]
+    U[Browser] --> A[Node.js :3000]
     U --> ME[Mongo Express :8081]
     A --> M[MongoDB :27017]
     ME --> M
     M --> V[(mongo-data volume)]
 ```
 
-## Decisions techniques
+## Technical Decisions
 
-- **`mongo:7.0`** au lieu de `mongo:latest` : Version fixee pour des builds reproductibles
-- **Healthcheck MongoDB** : `mongosh --eval "db.adminCommand('ping')"` verifie que MongoDB accepte les connexions avant de demarrer les services dependants
-- **`restart: unless-stopped`** sur Mongo Express : Redemarrage automatique si le container crash, mais pas au reboot de la machine
-- **Network isole** : `node-mongo-net` isole cette stack des autres stacks Docker sur la machine
-- **Volume nomme** : `mongo-data` persiste les donnees entre les `docker-compose down`
+- **`mongo:7.0`** instead of `mongo:latest`: Pinned version for reproducible builds
+- **MongoDB healthcheck**: `mongosh --eval "db.adminCommand('ping')"` verifies MongoDB is accepting connections before starting dependent services
+- **`restart: unless-stopped`** on Mongo Express: Automatic restart if the container crashes, but not on machine reboot
+- **Isolated network**: `node-mongo-net` isolates this stack from other Docker stacks on the machine
+- **Named volume**: `mongo-data` persists data between `docker-compose down` calls

@@ -1,35 +1,35 @@
-# Stack Java Spring Boot + PostgreSQL
+# Java Spring Boot + PostgreSQL Stack
 
-Stack de developpement pour une application Java Spring Boot avec PostgreSQL.
+Development stack for a Java Spring Boot application with PostgreSQL.
 
 ## Services
 
 | Service | Image | Port | Description |
 |---------|-------|------|-------------|
-| java-app | Configurable via `APP_IMAGE` | 8080 | Application Spring Boot |
-| postgres | `postgres:16` | 5432 | Base de donnees |
+| java-app | Configurable via `APP_IMAGE` | 8080 | Spring Boot application |
+| postgres | `postgres:16` | 5432 | Database |
 
-## Demarrage
+## Getting Started
 
 ```bash
-cp .env.example .env    # Modifier les valeurs
+cp .env.example .env    # Edit the values
 docker-compose up -d
 ```
 
-- Application : http://localhost:8080
+- Application: http://localhost:8080
 
 ## Architecture
 
 ```mermaid
 graph LR
-    U[Navigateur] --> A[Java App :8080]
+    U[Browser] --> A[Java App :8080]
     A -->|JDBC| P[PostgreSQL :5432]
     P --> V[(postgres-data volume)]
 ```
 
-## Decisions techniques
+## Technical Decisions
 
-- **`postgres:16`** : Version LTS de PostgreSQL, supportee jusqu'en 2028
-- **Healthcheck** : `pg_isready` verifie que PostgreSQL accepte les connexions avant de demarrer l'application Java
-- **Variables Spring** : `SPRING_DATASOURCE_URL` est passee via l'environnement pour que Spring Boot se connecte automatiquement a PostgreSQL sans modifier `application.properties`
-- **Volume nomme** : Les donnees PostgreSQL persistent entre les redemarrages
+- **`postgres:16`**: PostgreSQL LTS version, supported until 2028
+- **Healthcheck**: `pg_isready` verifies PostgreSQL is accepting connections before starting the Java application
+- **Spring variables**: `SPRING_DATASOURCE_URL` is passed via environment so Spring Boot connects automatically to PostgreSQL without modifying `application.properties`
+- **Named volume**: PostgreSQL data persists between restarts
